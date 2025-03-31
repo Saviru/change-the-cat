@@ -1,4 +1,4 @@
-name: Minesweeper Game
+name: "Minesweeper Game"
 
 on:
   issue_comment:
