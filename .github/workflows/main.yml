@@ -1,0 +1,41 @@
+name: Minesweeper Game
+
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+
+jobs:
+  process-move:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.title == 'Play Minesweeper' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Process game move
+        run: node src/minesweeper.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          
+      - name: Update README with new game state
+        run: node src/updateGame.js
+        
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'README.md game-state.json'
+          message: 'Update game state [skip ci]'
+          default_author: github_actions
