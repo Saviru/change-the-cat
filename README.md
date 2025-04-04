@@ -1,6 +1,6 @@
 # Random Cat Photo
 
-![Random Cat](./images/cat.jpg?v=1743795515449)
+![Random Cat](images/cat.jpg)
 
 ###### This cat photo was last changed by [@Saviru](https://github.com/Saviru) on Fri Apr 04 2025 19:38:34 GMT+0000 (Coordinated Universal Time).
 
