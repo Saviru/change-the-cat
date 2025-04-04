@@ -1,0 +1,49 @@
+name: Cat Photo Changer
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  change-cat:
+    if: ${{ github.event.issue.title == 'Meow!' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Create images directory if it doesn't exist
+        run: mkdir -p images
+
+      - name: Change cat photo
+        run: node .github/scripts/change-cat.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_CREATOR: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add images/cat.jpg cat-history.json
+          git commit -m "Change cat photo (triggered by @${{ github.event.issue.user.login }})"
+          git push
+          
+      - name: Close issue
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: "Meow! I've changed the cat photo for you. It was last changed by: ${{ env.LAST_CHANGER }}"
