@@ -59,15 +59,31 @@ function updateCatHistory(issueCreator) {
   // Write updated history back to file
   fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
   
-  // Set environment variable to use in GitHub Actions
-  console.log(`::set-env name=LAST_CHANGER::${lastChanger}`);
-  
   return lastChanger;
+}
+
+// Function to update the README.md file
+function updateReadme(issueCreator, timestamp) {
+  const readmePath = path.join(process.cwd(), 'README.md');
+  const readmeContent = `# Random Cat Photo
+
+![Random Cat](./images/cat.jpg?v=${Date.now()})
+
+This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
+
+## How to get a new cat?
+
+Create a new issue with the title "Meow!" and our workflow will automatically change the cat photo!
+`;
+
+  fs.writeFileSync(readmePath, readmeContent);
+  console.log('Updated README.md with new cat photo info');
 }
 
 async function main() {
   try {
     const issueCreator = process.env.ISSUE_CREATOR;
+    const currentTimestamp = new Date().toISOString();
     
     // 1. Get last changer and update history
     const lastChanger = updateCatHistory(issueCreator);
@@ -83,8 +99,10 @@ async function main() {
     await downloadImage(catPhotoUrl, imagePath);
     console.log(`Saved cat photo to: ${imagePath}`);
     
-    // For GitHub Actions compatibility (set-env is deprecated but using for simplicity)
-    // In a production environment, use the appropriate GitHub Actions syntax
+    // 4. Update README.md with the new cat photo
+    updateReadme(issueCreator, currentTimestamp);
+    
+    // For GitHub Actions
     execSync(`echo "LAST_CHANGER=${lastChanger}" >> $GITHUB_ENV`);
     
   } catch (error) {
