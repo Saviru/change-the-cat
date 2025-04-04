@@ -76,6 +76,7 @@ function updateReadme(issueCreator, timestamp) {
 <p align="center">
 
 ![Random Cat](images/cat.jpg?v=${cacheBuster})
+![Random Cat](images/${imageName})
 
 ###### This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
 
