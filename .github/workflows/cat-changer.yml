@@ -38,7 +38,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          git add images/cat.jpg cat-history.json
+          git add images/cat.jpg cat-history.json README.md
           git commit -m "Change cat photo (triggered by @${{ github.event.issue.user.login }})"
           git push
           
