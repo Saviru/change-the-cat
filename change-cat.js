@@ -65,9 +65,11 @@ function updateCatHistory(issueCreator) {
 // Function to update the README.md file
 function updateReadme(issueCreator, timestamp) {
   const readmePath = path.join(process.cwd(), 'README.md');
+  const cacheBuster = Date.now(); // Generate a unique timestamp for cache busting
+  
   const readmeContent = `# Random Cat Photo
 
-![Random Cat](./images/cat.jpg?v=${Date.now()})
+![Random Cat](images/cat.jpg?v=${cacheBuster})
 
 ###### This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
 
@@ -75,7 +77,7 @@ function updateReadme(issueCreator, timestamp) {
 [![Change Cat]][Link]
 
 [Change Cat]: https://img.shields.io/badge/Click_here_to_change_the_cat-37a779?style=for-the-badge
-[Link]: [Types/Shield.md](https://github.com/Saviru/change-the-cat/issues/new?template=meow-.md)
+[Link]: https://github.com/Saviru/change-the-cat/issues/new?template=meow-.md
 
 
 <hr>
@@ -87,6 +89,7 @@ Create a new issue with the title "Meow!" and our workflow will automatically ch
 
   fs.writeFileSync(readmePath, readmeContent);
   console.log('MEOW!');
+  console.log(`Added cache buster: ?v=${cacheBuster}`);
 }
 
 async function main() {
