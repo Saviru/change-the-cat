@@ -1,8 +1,8 @@
 # Random Cat Photo
 
-![Random Cat](./images/cat.jpg?v=1743775242351)
+![Random Cat](./images/cat.jpg?v=1743792028751)
 
-This cat photo was last changed by [@IT24100762](https://github.com/IT24100762) on Fri Apr 04 2025 14:00:41 GMT+0000 (Coordinated Universal Time).
+This cat photo was last changed by [@Kavi-ya](https://github.com/Kavi-ya) on Fri Apr 04 2025 18:40:28 GMT+0000 (Coordinated Universal Time).
 
 ## How to get a new cat?
 
