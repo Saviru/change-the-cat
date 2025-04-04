@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Function to get a random cat photo from The Cat API
+// get a random cat photo from The Cat API
 async function getRandomCatPhoto() {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/images/search');
@@ -14,7 +14,7 @@ async function getRandomCatPhoto() {
   }
 }
 
-// Function to download the image and save it
+
 async function downloadImage(url, filepath) {
   try {
     const response = await axios({
@@ -35,12 +35,12 @@ async function downloadImage(url, filepath) {
   }
 }
 
-// Function to update the cat history
+// update the cat history
 function updateCatHistory(issueCreator) {
   const historyPath = path.join(process.cwd(), 'cat-history.json');
   let history = { lastChangedBy: 'Unknown', timestamp: new Date().toISOString() };
   
-  // Try to read existing history file
+  // Tread existing history file
   if (fs.existsSync(historyPath)) {
     try {
       history = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
@@ -49,29 +49,37 @@ function updateCatHistory(issueCreator) {
     }
   }
   
-  // Store the previous changer to use in the issue comment
+
   const lastChanger = history.lastChangedBy;
   
-  // Update history with new changer
+
   history.lastChangedBy = issueCreator;
   history.timestamp = new Date().toISOString();
   
-  // Write updated history back to file
+  // Wupdated history
   fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
   
   return lastChanger;
 }
 
-// Function to update the README.md file
+
 function updateReadme(issueCreator, timestamp) {
   const readmePath = path.join(process.cwd(), 'README.md');
-  const cacheBuster = Date.now(); // Generate a unique timestamp for cache busting
+  const cacheBuster = Date.now();
   
-  const readmeContent = `# Random Cat Photo
+  const readmeContent = `# Change the Cat!
+
+![GitHub Repo stars](https://img.shields.io/github/stars/Saviru/change-the-cat?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Saviru/change-the-cat?style=social)
+
+<hr id="top">
+<p align="center">
 
 ![Random Cat](images/cat.jpg?v=${cacheBuster})
 
 ###### This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
+
+</p>
 
 
 [![Change Cat]][Link]
@@ -85,6 +93,17 @@ function updateReadme(issueCreator, timestamp) {
 ## How to get a new cat?
 
 Create a new issue with the title "Meow!" and our workflow will automatically change the cat photo!
+
+<br>
+
+**Note:** *This will take a few seconds/minutes to update the cat photo.* Meow!😸 
+
+<br><br>
+
+Developed and maintained by [@Saviru](https://github.com/Saviru)
+<br><br>
+<hr>
+<p align="center">Made with ❤️ for the GitHub community </p> 
 `;
 
   fs.writeFileSync(readmePath, readmeContent);
@@ -97,21 +116,21 @@ async function main() {
     const issueCreator = process.env.ISSUE_CREATOR;
     const currentTimestamp = new Date();
     
-    // 1. Get last changer and update history
+    // Get last changer and update history
     const lastChanger = updateCatHistory(issueCreator);
     console.log(`Last cat changer was: ${lastChanger}`);
     console.log(`New cat changer is: ${issueCreator}`);
     
-    // 2. Get random cat photo
+    // Get random cat photo
     const catPhotoUrl = await getRandomCatPhoto();
     console.log(`Got new cat photo: ${catPhotoUrl}`);
     
-    // 3. Save the cat photo
+    // Save the cat photo
     const imagePath = path.join(process.cwd(), 'images', 'cat.jpg');
     await downloadImage(catPhotoUrl, imagePath);
     console.log(`Saved cat photo to: ${imagePath}`);
     
-    // 4. Update README.md with the new cat photo
+    // Update README.md with the new cat photo
     updateReadme(issueCreator, currentTimestamp);
     
     // For GitHub Actions
