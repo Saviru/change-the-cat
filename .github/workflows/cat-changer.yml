@@ -1,4 +1,4 @@
-name: Cat Photo Changer
+name: Meme Cat Photo Changer
 
 on:
   issues:
@@ -22,7 +22,7 @@ jobs:
           node-version: '16'
           
       - name: Install dependencies
-        run: npm install axios
+        run: npm install axios moment
         
       - name: Create necessary directories
         run: |
@@ -36,15 +36,34 @@ jobs:
           const fs = require('fs');
           const path = require('path');
           const { execSync } = require('child_process');
+          const moment = require('moment');
 
-          // Function to get a random cat photo from The Cat API
-          async function getRandomCatPhoto() {
+          // Function to get a random meme/popular cat photo
+          async function getRandomMemeCat() {
             try {
-              const response = await axios.get('https://api.thecatapi.com/v1/images/search');
+              // Use categories to get meme/funny cats - IDs 2 and 9 are for memes and funny cats
+              const categories = [2, 9]; 
+              const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+              
+              const response = await axios.get(`https://api.thecatapi.com/v1/images/search?category_ids=${randomCategory}&limit=1`);
+              
+              // Fallback to general cats if no meme cats are found
+              if (response.data.length === 0) {
+                const fallbackResponse = await axios.get('https://api.thecatapi.com/v1/images/search');
+                return fallbackResponse.data[0].url;
+              }
+              
               return response.data[0].url;
             } catch (error) {
-              console.error('Error fetching cat photo:', error);
-              process.exit(1);
+              console.error('Error fetching meme cat photo:', error);
+              // Fallback to general cats if there's an error
+              try {
+                const fallbackResponse = await axios.get('https://api.thecatapi.com/v1/images/search');
+                return fallbackResponse.data[0].url;
+              } catch (fallbackError) {
+                console.error('Error fetching fallback cat photo:', fallbackError);
+                process.exit(1);
+              }
             }
           }
 
@@ -69,10 +88,19 @@ jobs:
             }
           }
 
+          // Function to format date in YYYY-MM-DD HH:MM:SS format
+          function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD HH:mm:ss');
+          }
+
           // Function to update the cat history
           function updateCatHistory(issueCreator) {
             const historyPath = path.join(process.cwd(), 'cat-history.json');
-            let history = { lastChangedBy: 'Unknown', timestamp: new Date().toISOString() };
+            let history = { 
+              lastChangedBy: 'Unknown', 
+              timestamp: new Date().toISOString(),
+              formattedTimestamp: formatDate(new Date())
+            };
             
             // Try to read existing history file
             if (fs.existsSync(historyPath)) {
@@ -87,8 +115,10 @@ jobs:
             const lastChanger = history.lastChangedBy;
             
             // Update history with new changer
+            const now = new Date();
             history.lastChangedBy = issueCreator;
-            history.timestamp = new Date().toISOString();
+            history.timestamp = now.toISOString();
+            history.formattedTimestamp = formatDate(now);
             
             // Write updated history back to file
             fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
@@ -97,44 +127,50 @@ jobs:
           }
 
           // Function to update the README.md file
-          function updateReadme(issueCreator, timestamp) {
+          function updateReadme(issueCreator, formattedTimestamp) {
             const readmePath = path.join(process.cwd(), 'README.md');
-            const readmeContent = `# Random Cat Photo
+            const readmeContent = `# Random Meme Cat Photo
 
-          ![Random Cat](./images/cat.jpg?v=${Date.now()})
+          ![Meme Cat](./images/cat.jpg?v=${Date.now()})
 
-          This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
+          This meme cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${formattedTimestamp}.
 
-          ## How to get a new cat?
+          ## How to get a new meme cat?
 
           Create a new issue with the title "Meow!" and our workflow will automatically change the cat photo!
+          
+          ## About
+          
+          This repository uses GitHub Actions to automatically change the cat photo whenever someone creates an issue titled "Meow!".
+          The workflow selects popular and meme cats from The Cat API's collections.
           `;
 
             fs.writeFileSync(readmePath, readmeContent);
-            console.log('Updated README.md with new cat photo info');
+            console.log('Updated README.md with new meme cat photo info');
           }
 
           async function main() {
             try {
               const issueCreator = process.env.ISSUE_CREATOR;
-              const currentTimestamp = new Date().toISOString();
+              const now = new Date();
+              const formattedTimestamp = formatDate(now);
               
               // 1. Get last changer and update history
               const lastChanger = updateCatHistory(issueCreator);
               console.log(`Last cat changer was: ${lastChanger}`);
               console.log(`New cat changer is: ${issueCreator}`);
               
-              // 2. Get random cat photo
-              const catPhotoUrl = await getRandomCatPhoto();
-              console.log(`Got new cat photo: ${catPhotoUrl}`);
+              // 2. Get random meme cat photo
+              const catPhotoUrl = await getRandomMemeCat();
+              console.log(`Got new meme cat photo: ${catPhotoUrl}`);
               
               // 3. Save the cat photo
               const imagePath = path.join(process.cwd(), 'images', 'cat.jpg');
               await downloadImage(catPhotoUrl, imagePath);
-              console.log(`Saved cat photo to: ${imagePath}`);
+              console.log(`Saved meme cat photo to: ${imagePath}`);
               
               // 4. Update README.md with the new cat photo
-              updateReadme(issueCreator, currentTimestamp);
+              updateReadme(issueCreator, formattedTimestamp);
               
               // For GitHub Actions
               execSync(`echo "LAST_CHANGER=${lastChanger}" >> $GITHUB_ENV`);
@@ -151,7 +187,7 @@ jobs:
       - name: Create initial cat history if it doesn't exist
         run: |
           if [ ! -f cat-history.json ]; then
-            echo '{"lastChangedBy": "Saviru", "timestamp": "2025-04-04T12:04:08Z"}' > cat-history.json
+            echo '{"lastChangedBy": "Saviru", "timestamp": "2025-04-04T12:12:30Z", "formattedTimestamp": "2025-04-04 12:12:30"}' > cat-history.json
           fi
 
       - name: Change cat photo
@@ -166,11 +202,11 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           git add images/cat.jpg cat-history.json README.md
-          git commit -m "Change cat photo (triggered by @${{ github.event.issue.user.login }})"
+          git commit -m "Change meme cat photo (triggered by @${{ github.event.issue.user.login }})"
           git push
           
       - name: Close issue
         uses: peter-evans/close-issue@v3
         with:
           issue-number: ${{ github.event.issue.number }}
-          comment: "Meow! I've changed the cat photo for you. It was last changed by: ${{ env.LAST_CHANGER }}"
+          comment: "Meow! I've changed the meme cat photo for you. It was last changed by: ${{ env.LAST_CHANGER }}"
