@@ -69,7 +69,16 @@ function updateReadme(issueCreator, timestamp) {
 
 ![Random Cat](./images/cat.jpg?v=${Date.now()})
 
-This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
+###### This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
+
+
+[![Change Cat]][Link]
+
+[Change Cat]: https://img.shields.io/badge/Click_here_to_change_the_cat-37a779?style=for-the-badge
+[Link]: [Types/Shield.md](https://github.com/Saviru/change-the-cat/issues/new?template=meow-.md)
+
+
+<hr>
 
 ## How to get a new cat?
 
