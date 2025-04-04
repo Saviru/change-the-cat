@@ -67,7 +67,7 @@ function updateReadme(issueCreator, timestamp) {
   const readmePath = path.join(process.cwd(), 'README.md');
   const readmeContent = `# Random Cat Photo
 
-![Random Cat](./images/cat.jpg)
+![Random Cat](./images/cat.jpg?v=${Date.now()})
 
 This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
 
@@ -77,13 +77,13 @@ Create a new issue with the title "Meow!" and our workflow will automatically ch
 `;
 
   fs.writeFileSync(readmePath, readmeContent);
-  console.log('Updated README.md with new cat photo info');
+  console.log('MEOW!');
 }
 
 async function main() {
   try {
     const issueCreator = process.env.ISSUE_CREATOR;
-    const currentTimestamp = new Date().toISOString();
+    const currentTimestamp = new Date();
     
     // 1. Get last changer and update history
     const lastChanger = updateCatHistory(issueCreator);

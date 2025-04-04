@@ -77,13 +77,13 @@ Create a new issue with the title "Meow!" and our workflow will automatically ch
 `;
 
   fs.writeFileSync(readmePath, readmeContent);
-  console.log('Updated README.md with new cat photo info');
+  console.log('MEOW!');
 }
 
 async function main() {
   try {
     const issueCreator = process.env.ISSUE_CREATOR;
-    const currentTimestamp = new Date().toISOString();
+    const currentTimestamp = new Date();
     
     // 1. Get last changer and update history
     const lastChanger = updateCatHistory(issueCreator);
