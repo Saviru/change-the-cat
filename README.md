@@ -1,6 +1,6 @@
 # Random Meme Cat Photo
 
-![Meme Cat](./images/cat.jpg?v=1743769064425)
+![Meme Cat](https://github.com/Saviru/change-the-cat/blob/main/images/cat.jpg)
 
 This meme cat photo was last changed by [@Saviru](https://github.com/Saviru) on 2025-04-04 12:17:44.
 
