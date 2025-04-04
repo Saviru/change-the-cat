@@ -21,6 +21,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
+      - name: Remove existing images
+        run: |
+          rm -r images/*  
           
       - name: Install dependencies
         run: npm install axios moment
