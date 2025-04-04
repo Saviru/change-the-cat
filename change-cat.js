@@ -67,7 +67,7 @@ function updateReadme(issueCreator, timestamp) {
   const readmePath = path.join(process.cwd(), 'README.md');
   const readmeContent = `# Random Cat Photo
 
-![Random Cat](./images/cat.jpg?v=${Date.now()})
+![Random Cat](./images/cat.jpg)
 
 This cat photo was last changed by [@${issueCreator}](https://github.com/${issueCreator}) on ${timestamp}.
 
