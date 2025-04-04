@@ -3,14 +3,13 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/Saviru/change-the-cat?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/Saviru/change-the-cat?style=social)
 
+
 <hr id="top">
-<p align="center">
 
-![Random Cat](images/cat.jpg?v=1743798547085)
 
-###### This cat photo was last changed by [@Saviru](https://github.com/Saviru) on Fri Apr 04 2025 20:29:06 GMT+0000 (Coordinated Universal Time).
+![Random Cat](./images/cat-6172d321.jpg)
 
-</p>
+###### This cat photo was last changed by [@Saviru](https://github.com/Saviru) on Fri Apr 04 2025 20:39:05 GMT+0000 (Coordinated Universal Time).
 
 
 [![Change Cat]][Link]
